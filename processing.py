@@ -1,8 +1,10 @@
 from numpy import clip , uint8 , array , prod 
+from PIL import Image
 def load_image(path = ''):
-    print(f'loading image from [ {path} ]')
-    img = array()
-    return img
+    img = Image.open(path)
+    gray_img = img.convert("L")
+    gray_array = array(gray_img)
+    return gray_array
 
 def adjust_brightness(img , beta):
     temp_img = img + beta
@@ -17,15 +19,16 @@ def linear_contrast(img , alpha , beta):
 def contrast_strech(img , f_min = None , f_max = None):
     f_min = f_min if f_min is not None else img.min()
     f_max = f_max if f_max is not None else img.max()
-    temp_img = 255 * (img - f_min) / (f_max - f_min)
+    divisor = f_max - f_min if f_max != f_min else 255
+    temp_img = 255 * (img - f_min) / divisor
     return clip(temp_img , 0 , 255).astype(uint8)
     
-def copute_histogram(img):
+def compute_histogram(img):
     H = array([img[img == pixel].shape[0] for pixel in range(256)])
     return H
 
 def histogram_equalization(img):
-    H = copute_histogram(img)
+    H = compute_histogram(img)
     size  = prod(img.shape)
     probabilities = H / size
     C = [sum(probabilities[:i+1]) for i in range(256)]
@@ -34,8 +37,3 @@ def histogram_equalization(img):
 def threshold(img , threshold):
     temp = img >= threshold
     return temp * 255 
-
-
-
-
-#py processing.py
