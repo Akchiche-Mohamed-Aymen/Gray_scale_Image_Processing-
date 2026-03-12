@@ -320,7 +320,6 @@ class App(tk.Tk):
                color=PINK).pack(anchor="w", pady=(2, 10))
         Separator(fp).pack(fill="x", pady=10)
 
-        # ── 5. Histogram Equalization ──
         Label(fp, "≋  Histogram Equalization", font=FONT_B).pack(anchor="w")
         Label(fp, "Redistributes pixel intensities", font=FONT_SM, fg=SUBTEXT).pack(anchor="w", pady=(2, 6))
         Button(fp, "Equalize", self._apply_histogram_eq,
@@ -532,7 +531,7 @@ class App(tk.Tk):
             return
 
         H   = compute_histogram(self.processed)
-        cdf = histogram_equalization(self.processed)
+        cdf = compute_cdf(self.processed)
 
         self.ax_hist.cla()
         self.ax_hist.fill_between(range(256), H, color=ACCENT, alpha=0.7)

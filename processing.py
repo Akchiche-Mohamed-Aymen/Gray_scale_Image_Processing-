@@ -27,12 +27,19 @@ def compute_histogram(img):
     H = array([img[img == pixel].shape[0] for pixel in range(256)])
     return H
 
-def histogram_equalization(img):
+def compute_cdf(img):
     H = compute_histogram(img)
     size  = prod(img.shape)
     probabilities = H / size
     C = [sum(probabilities[:i+1]) for i in range(256)]
     return C
+
+def histogram_equalization(img):
+    C = compute_cdf(img)
+    C_normalized = [int(255 * c) for c in C]
+    equalized_img = array([C_normalized[pixel] for pixel in img.flat]).reshape(img.shape)
+    print(equalized_img)
+    return equalized_img.astype(uint8)
 
 def threshold(img , threshold):
     temp = img >= threshold
